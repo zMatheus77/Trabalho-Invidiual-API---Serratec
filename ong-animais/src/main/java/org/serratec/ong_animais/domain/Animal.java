@@ -1,6 +1,10 @@
 package org.serratec.ong_animais.domain;
 
+import java.time.LocalDate;
+
 import org.serratec.ong_animais.enumerated.Especie;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -17,6 +21,7 @@ import jakarta.persistence.ManyToOne;
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_animal")
     private Long id;
 
     @Column(length = 40)
@@ -30,19 +35,31 @@ public class Animal {
     private Caracteristica caracteristica;
 
     @ManyToOne
-    @JoinColumn(name = "responsavel_id")
+    @JoinColumn(name = "responsavel_id", nullable = false)
+    @JsonBackReference
     private Pessoa responsavel;
 
-    @Column
+    @Column(length = 200)
     private String descricao;
 
-    public Animal(Caracteristica caracteristica, String descricao, Especie especie, Long id, String nome, Pessoa responsavel) {
+    @Column
+    private LocalDate dataNascimento;
+
+    public Animal(Caracteristica caracteristica, 
+            String descricao, 
+            Especie especie, 
+            Long id, 
+            String nome, 
+            Pessoa responsavel,
+            LocalDate dataNascimento) {
+
         this.caracteristica = caracteristica;
         this.descricao = descricao;
         this.especie = especie;
         this.id = id;
         this.nome = nome;
         this.responsavel = responsavel;
+        this.dataNascimento = dataNascimento;
     }
 
     public Animal() {
@@ -95,5 +112,13 @@ public class Animal {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 }

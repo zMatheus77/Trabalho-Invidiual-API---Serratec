@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pessoa")
     private Long id;
 
     @Column

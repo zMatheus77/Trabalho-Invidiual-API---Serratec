@@ -2,6 +2,7 @@ package org.serratec.ong_animais.domain;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 public class InteresseAdocao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_InteresseAdocao")
     private Long id;
 
     @ManyToOne

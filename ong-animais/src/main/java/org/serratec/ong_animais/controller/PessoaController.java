@@ -1,10 +1,10 @@
 package org.serratec.ong_animais.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.serratec.ong_animais.domain.Pessoa;
-import org.serratec.ong_animais.repository.PessoaRepository;
+import org.serratec.ong_animais.dto.PessoaDTORequest;
+import org.serratec.ong_animais.dto.PessoaDTOResponse;
+import org.serratec.ong_animais.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,51 +23,56 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaController {
+
     @Autowired
-    private PessoaRepository pessoaRepository;
+    private PessoaService pessoaService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private Pessoa inserir(@RequestBody Pessoa pessoa){
-        return pessoaRepository.save(pessoa);
+    public PessoaDTOResponse inserir(@Valid @RequestBody PessoaDTORequest pessoa) {
+        return pessoaService.inserir(pessoa);
     }
 
     @GetMapping
-    public ResponseEntity<List<Pessoa>> listar(){
-        return ResponseEntity.ok(pessoaRepository.findAll());
+    public ResponseEntity<List<PessoaDTOResponse>> listar() {
+        return ResponseEntity.ok(pessoaService.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pessoa> buscar(@PathVariable Long id){
-        Optional<Pessoa> pessoa = pessoaRepository.findById(id);
+    public ResponseEntity<PessoaDTOResponse> buscar(@PathVariable Long id) {
 
-        if(pessoa.isPresent()){
-            return ResponseEntity.ok(pessoa.get());
+        PessoaDTOResponse pessoa = pessoaService.buscarPorId(id);
+
+        if (pessoa == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pessoa);
     }
 
     @PutMapping("/{id}")
-	public ResponseEntity<Pessoa> atualizar(@Valid @RequestBody Pessoa pessoa,
-			@PathVariable Long id) {
-		
-		if(!pessoaRepository.existsById(id)) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		pessoa.setId(id);
-		pessoa = pessoaRepository.save(pessoa);
-		return ResponseEntity.ok(pessoa);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Pessoa> remover(@PathVariable Long id) {
-		if (!pessoaRepository.existsById(id)) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		pessoaRepository.deleteById(id);
-		return ResponseEntity.noContent().build();
-	}
+    public ResponseEntity<PessoaDTOResponse> atualizar(
+            @Valid @RequestBody PessoaDTORequest pessoa,
+            @PathVariable Long id) {
+
+        PessoaDTOResponse pessoaAtualizada = pessoaService.atualizar(id, pessoa);
+
+        if (pessoaAtualizada == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(pessoaAtualizada);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+
+        boolean removido = pessoaService.deletar(id);
+
+        if (!removido) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 }
