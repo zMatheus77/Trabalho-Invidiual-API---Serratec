@@ -2,9 +2,12 @@ package org.serratec.ong_animais.domain;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +19,7 @@ public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pessoa")
+    @Schema(description = "Identificador único da pessoa", example = "1")
     private Long id;
 
     @Column
@@ -30,7 +34,9 @@ public class Pessoa {
     @Embedded
     private Endereco endereco;
     
-    @OneToMany(mappedBy = "interessado")
+    @OneToMany(mappedBy = "interessado",
+           cascade = CascadeType.ALL,
+           orphanRemoval = true, fetch = FetchType.LAZY)
     private List<InteresseAdocao> interesses;
 
     public Pessoa(String email, Endereco endereco, Long id, List<InteresseAdocao> interesses, String nome, String telefone) {

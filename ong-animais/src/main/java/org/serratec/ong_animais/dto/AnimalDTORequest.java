@@ -3,9 +3,9 @@ package org.serratec.ong_animais.dto;
 import java.time.LocalDate;
 
 import org.serratec.ong_animais.domain.Animal;
-import org.serratec.ong_animais.domain.Caracteristica;
 import org.serratec.ong_animais.enumerated.Especie;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -18,21 +18,32 @@ public class AnimalDTORequest{
     @Pattern(
     regexp = "^[A-Za-zÀ-ÿ\\s]{2,50}$",
     message = "Nome deve conter apenas letras e espaços")
+    @Schema(description = "Nome do animal", example = "Thor")
     private String nome;
 
     @NotNull(message = "A espécie do animal é obrigatória")
+    @Schema(description = "Espécia do animal, exemplos: CACHORRO,\r\n" + //
+                "    GATO,\r\n" + //
+                "    CAVALO,\r\n" + //
+                "    PASSARO,\r\n" + //
+                "    COELHO,\r\n" + //
+                "    HAMSTER,\r\n" + //
+                "    OUTRO")
     private Especie especie;
 
     @NotBlank(message = "A descrição do animal é obrigatória")
     @Size(min = 2, max = 200)
+    @Schema(description = "Descricao do animal", example = "Cachorro muito dócil que gosta de brincar")
     private String descricao;
 
-    private Caracteristica caracteristica;
+    private CaracteristicaDTORequest caracteristica;
 
     @Past
+    @Schema(description = "Data de nascimento do animal", example = "2020-01-01")
     private LocalDate dataNascimento;
 
     @NotNull(message = "O id do responsável não pode ser nulo")
+    @Schema(description = "Identificador único do responsável do animal", example = "1")
     private Long responsavelId;
 
     public AnimalDTORequest() {
@@ -40,7 +51,7 @@ public class AnimalDTORequest{
     }
 
     public AnimalDTORequest(Animal animal) {
-        this.caracteristica = animal.getCaracteristica();
+        this.caracteristica = new CaracteristicaDTORequest(animal.getCaracteristica());
         this.descricao = animal.getDescricao();
         this.especie = animal.getEspecie();
         this.nome = animal.getNome();
@@ -74,11 +85,11 @@ public class AnimalDTORequest{
         this.descricao = descricao;
     }
 
-    public Caracteristica getCaracteristica() {
+    public CaracteristicaDTORequest getCaracteristica() {
         return caracteristica;
     }
 
-    public void setCaracteristica(Caracteristica caracteristica) {
+    public void setCaracteristica(CaracteristicaDTORequest caracteristica) {
         this.caracteristica = caracteristica;
     }
 

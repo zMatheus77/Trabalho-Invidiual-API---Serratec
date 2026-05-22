@@ -2,6 +2,7 @@ package org.serratec.ong_animais.dto;
 
 import org.serratec.ong_animais.domain.Pessoa;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,11 +16,13 @@ public class PessoaDTORequest {
     @Pattern(
     regexp = "^[A-Za-zÀ-ÿ\\s]{2,50}$",
     message = "Nome deve conter apenas letras e espaços")
+    @Schema(description = "Nome da pessoa", example = "João")
     private String nome;
 
     @Email(message = "O email informado é inválido")
     @NotBlank(message = "O atributo email é obrigatório")
     @Size(max = 100)
+    @Schema(description = "Email da pessoa", example = "joao@gmail.com")
     private String email;
 
     @NotBlank(message = "O atributo telefone é obrigatório")
@@ -27,6 +30,7 @@ public class PessoaDTORequest {
     @Pattern(
     regexp = "^\\(?\\d{2}\\)?\\s?9?\\d{4}-?\\d{4}$",
     message = "Telefone inválido. Ex: (21)99999-9999")
+    @Schema(description = "Telefone da pessoa", example = "21999991111")
     private String telefone;
 
     @NotNull(message = "O atributo endereço é obrigatório")

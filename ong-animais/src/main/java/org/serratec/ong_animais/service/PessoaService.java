@@ -6,6 +6,8 @@ import org.serratec.ong_animais.domain.Endereco;
 import org.serratec.ong_animais.domain.Pessoa;
 import org.serratec.ong_animais.dto.PessoaDTORequest;
 import org.serratec.ong_animais.dto.PessoaDTOResponse;
+import org.serratec.ong_animais.exceptions.DuplicateEntryException;
+import org.serratec.ong_animais.exceptions.ResourceNotFoundException;
 import org.serratec.ong_animais.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     public PessoaDTOResponse inserir(PessoaDTORequest pessoaDto) {
+        if (pessoaRepository.existsByEmail(pessoaDto.getEmail())) {
+            throw new DuplicateEntryException("Já existe uma pessoa cadastrada com esse email");
+        }
 
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(pessoaDto.getNome());
@@ -47,10 +52,14 @@ public class PessoaService {
     public PessoaDTOResponse buscarPorId(Long id) {
         return pessoaRepository.findById(id)
                 .map(PessoaDTOResponse::new)
-                .orElse(null);
+                .orElseThrow(() ->
+                new ResourceNotFoundException("Responsável não encontrado"));
     }
 
     public PessoaDTOResponse atualizar(Long id, PessoaDTORequest pessoaDto) {
+        if (pessoaRepository.existsByEmail(pessoaDto.getEmail())) {
+            throw new DuplicateEntryException("Já existe uma pessoa cadastrada com esse email");
+        }
 
         return pessoaRepository.findById(id)
                 .map(pessoa -> {
@@ -70,7 +79,8 @@ public class PessoaService {
 
                     return new PessoaDTOResponse(pessoaRepository.save(pessoa));
                 })
-                .orElse(null);
+                .orElseThrow(() ->
+                new ResourceNotFoundException("Responsável não encontrado"));
     }
 
     public boolean deletar(Long id) {

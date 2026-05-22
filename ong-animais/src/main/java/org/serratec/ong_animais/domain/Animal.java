@@ -6,6 +6,7 @@ import org.serratec.ong_animais.enumerated.Especie;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -22,13 +23,22 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_animal")
+    @Schema(description = "Identificador único do animal", example = "1")
     private Long id;
 
     @Column(length = 40)
+    @Schema(description = "Nome do animal", example = "Thor")
     private String nome;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @Schema(description = "Espécia do animal, exemplos: CACHORRO,\r\n" + //
+                "    GATO,\r\n" + //
+                "    CAVALO,\r\n" + //
+                "    PASSARO,\r\n" + //
+                "    COELHO,\r\n" + //
+                "    HAMSTER,\r\n" + //
+                "    OUTRO")
     private Especie especie;
 
     @Embedded

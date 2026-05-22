@@ -3,9 +3,12 @@ package org.serratec.ong_animais.service;
 import java.util.List;
 
 import org.serratec.ong_animais.domain.Animal;
+import org.serratec.ong_animais.domain.Caracteristica;
 import org.serratec.ong_animais.domain.Pessoa;
 import org.serratec.ong_animais.dto.AnimalDTORequest;
 import org.serratec.ong_animais.dto.AnimalDTOResponse;
+import org.serratec.ong_animais.dto.CaracteristicaDTORequest;
+import org.serratec.ong_animais.exceptions.ResourceNotFoundException;
 import org.serratec.ong_animais.repository.AnimalRepository;
 import org.serratec.ong_animais.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +26,22 @@ public class AnimalService {
     public AnimalDTOResponse inserir(AnimalDTORequest animalDto) {
 
         Pessoa responsavel = pessoaRepository.findById(animalDto.getResponsavelId())
-                .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
+                .orElseThrow(() ->  new ResourceNotFoundException("Responsável não encontrado"));
 
         Animal animal = new Animal();
         animal.setNome(animalDto.getNome());
         animal.setDescricao(animalDto.getDescricao());
         animal.setEspecie(animalDto.getEspecie());
-        animal.setCaracteristica(animalDto.getCaracteristica());
+
+        CaracteristicaDTORequest caracteristicaDto = animalDto.getCaracteristica();
+        Caracteristica caracteristica = new Caracteristica(
+            caracteristicaDto.getCor(),
+            caracteristicaDto.getPeso(),
+            caracteristicaDto.getPorte(),
+            caracteristicaDto.getRaca()
+        );
+        animal.setCaracteristica(caracteristica);
+
         animal.setResponsavel(responsavel);
         animal.setDataNascimento(animalDto.getDataNascimento());
 
@@ -48,7 +60,7 @@ public class AnimalService {
     public AnimalDTOResponse buscarPorId(Long id) {
         return animalRepository.findById(id)
                 .map(AnimalDTOResponse::new)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado"));
     }
 
     public AnimalDTOResponse atualizar(Long id, AnimalDTORequest animalDto) {
@@ -57,12 +69,22 @@ public class AnimalService {
                 .map(animal -> {
 
                     Pessoa responsavel = pessoaRepository.findById(animalDto.getResponsavelId())
-                            .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
+                            .orElseThrow(() -> 
+                            new ResourceNotFoundException("Responsável não encontrado"));
 
                     animal.setNome(animalDto.getNome());
                     animal.setDescricao(animalDto.getDescricao());
                     animal.setEspecie(animalDto.getEspecie());
-                    animal.setCaracteristica(animalDto.getCaracteristica());
+
+                    CaracteristicaDTORequest caracteristicaDto = animalDto.getCaracteristica();
+                    Caracteristica caracteristica = new Caracteristica(
+                        caracteristicaDto.getCor(),
+                        caracteristicaDto.getPeso(),
+                        caracteristicaDto.getPorte(),
+                        caracteristicaDto.getRaca()
+                    );
+                    animal.setCaracteristica(caracteristica);
+
                     animal.setResponsavel(responsavel);
                     animal.setDataNascimento(animalDto.getDataNascimento());
 

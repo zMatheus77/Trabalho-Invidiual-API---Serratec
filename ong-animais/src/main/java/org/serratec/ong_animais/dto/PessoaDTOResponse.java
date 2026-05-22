@@ -1,5 +1,7 @@
 package org.serratec.ong_animais.dto;
 
+import java.util.List;
+
 import org.serratec.ong_animais.domain.Pessoa;
 
 public class PessoaDTOResponse {
@@ -7,6 +9,7 @@ public class PessoaDTOResponse {
     private String nome;
     private String email;
     private String telefone;
+    private List<InteresseAdocaoDTOResponse> interesses;
 
     public PessoaDTOResponse() {
         super();
@@ -17,6 +20,12 @@ public class PessoaDTOResponse {
         this.nome = pessoa.getNome();
         this.email = pessoa.getEmail();
         this.telefone = pessoa.getTelefone();
+        if (pessoa.getInteresses() != null) {
+            this.interesses = pessoa.getInteresses()
+                    .stream()
+                    .map(InteresseAdocaoDTOResponse::new)
+                    .toList();
+        }
     }
 
     public Long getId() {
@@ -49,5 +58,13 @@ public class PessoaDTOResponse {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public List<InteresseAdocaoDTOResponse> getInteresses() {
+        return interesses;
+    }
+
+    public void setInteresses(List<InteresseAdocaoDTOResponse> interesses) {
+        this.interesses = interesses;
     }
 }

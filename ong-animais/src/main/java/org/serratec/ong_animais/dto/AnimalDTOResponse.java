@@ -3,7 +3,6 @@ package org.serratec.ong_animais.dto;
 import java.time.LocalDate;
 
 import org.serratec.ong_animais.domain.Animal;
-import org.serratec.ong_animais.domain.Caracteristica;
 import org.serratec.ong_animais.enumerated.Especie;
 
 public class AnimalDTOResponse {
@@ -12,7 +11,7 @@ public class AnimalDTOResponse {
     private Especie especie;
     private String descricao;
 
-    private Caracteristica caracteristica;
+    private CaracteristicaDTOResponse caracteristica;
 
     private Long responsavelId;
     private String responsavelNome;
@@ -24,7 +23,9 @@ public class AnimalDTOResponse {
     }
 
     public AnimalDTOResponse(Animal animal) {
-        this.caracteristica = animal.getCaracteristica();
+        if (animal.getCaracteristica() != null) {
+            this.caracteristica = new CaracteristicaDTOResponse(animal.getCaracteristica());
+        }
         this.descricao = animal.getDescricao();
         this.especie = animal.getEspecie();
         this.id = animal.getId();
@@ -52,7 +53,7 @@ public class AnimalDTOResponse {
         return descricao;
     }
 
-    public Caracteristica getCaracteristica() {
+    public CaracteristicaDTOResponse getCaracteristica() {
         return caracteristica;
     }
 
