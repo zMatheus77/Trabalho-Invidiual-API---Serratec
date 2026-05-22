@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -27,17 +28,20 @@ public class PessoaController {
     @Autowired
     private PessoaService pessoaService;
 
+    @Operation(summary = "Cadastrar uma pessoa")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PessoaDTOResponse inserir(@Valid @RequestBody PessoaDTORequest pessoa) {
         return pessoaService.inserir(pessoa);
     }
 
+    @Operation(summary = "Listar pessoas", description = "Retorna todos as pessoas cadastradas")
     @GetMapping
     public ResponseEntity<List<PessoaDTOResponse>> listar() {
         return ResponseEntity.ok(pessoaService.listar());
     }
 
+    @Operation(summary = "Buscar pessoa por ID", description = "Retorna uma pessoa específica pelo ID")
     @GetMapping("/{id}")
     public ResponseEntity<PessoaDTOResponse> buscar(@PathVariable Long id) {
 
@@ -50,6 +54,7 @@ public class PessoaController {
         return ResponseEntity.ok(pessoa);
     }
 
+    @Operation(summary = "Atualizar pessoa", description = "Atualiza os dados de uma pessoa existente")
     @PutMapping("/{id}")
     public ResponseEntity<PessoaDTOResponse> atualizar(
             @Valid @RequestBody PessoaDTORequest pessoa,
@@ -64,6 +69,7 @@ public class PessoaController {
         return ResponseEntity.ok(pessoaAtualizada);
     }
 
+    @Operation(summary = "Remover pessoa", description = "Remove uma pessoa pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
 

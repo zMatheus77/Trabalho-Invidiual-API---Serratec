@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,17 +27,20 @@ public class AnimalController{
     @Autowired
     private AnimalService animalService;
 
+    @Operation(summary = "Cadastrar um animal")
     @PostMapping
     public ResponseEntity<AnimalDTOResponse> inserir(@Valid @RequestBody AnimalDTORequest animal){
         AnimalDTOResponse criado = animalService.inserir(animal);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
+    @Operation(summary = "Listar animais", description = "Retorna todos os animais cadastrados")
     @GetMapping
     public ResponseEntity<List<AnimalDTOResponse>> listar(){
         return ResponseEntity.ok(animalService.listar());
     }
 
+    @Operation(summary = "Buscar animal por ID", description = "Retorna um animal específico pelo ID")
     @GetMapping("/{id}")
     public ResponseEntity<AnimalDTOResponse> buscar(@PathVariable Long id){
         AnimalDTOResponse animal = animalService.buscarPorId(id);
@@ -48,6 +52,7 @@ public class AnimalController{
         return ResponseEntity.ok(animal);
     }
 
+    @Operation(summary = "Atualizar animal", description = "Atualiza os dados de um animal existente")
     @PutMapping("/{id}")
     public ResponseEntity<AnimalDTOResponse> atualizar(
             @Valid @RequestBody AnimalDTORequest animal,
@@ -62,6 +67,7 @@ public class AnimalController{
         return ResponseEntity.ok(atualizado);
     }
 
+    @Operation(summary = "Remover animal", description = "Remove um animal pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id){
         boolean removido = animalService.deletar(id);
